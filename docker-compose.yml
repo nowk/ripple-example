@@ -1,0 +1,28 @@
+version: "2.0"
+services:
+  golang:
+    image: "golang:1.10"
+    volumes:
+      - .:/go/src/github.com/nowk/ripple-example
+      - /go/bin
+      - /go/pkg
+      - .bin/dumb-init:/usr/local/bin/dumb-init
+    working_dir: /go/src/github.com/nowk/ripple-example
+
+  go:
+    extends:
+      service: golang
+    volumes_from: 
+      - golang
+    entrypoint: dumb-init go
+
+  server:
+    extends:
+      service: golang
+    volumes_from:
+      - golang
+    entrypoint: dumb-init
+    command: go run main.go
+    ports:
+      - "4000:4000"
+
